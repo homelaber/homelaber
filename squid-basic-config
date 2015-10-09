@@ -1,0 +1,60 @@
+http_port 3128
+visible_hostname proxy.homelab.srv.br 
+
+#error_directory /usr/share/squid/errors/Portuguese 
+
+hierarchy_stoplist CGI-bin ? 
+
+cache_mgr admin@seu_dominio.com.br 
+
+acl QUERY urlpath_regex cgi-bin ?
+no_cache deny QUERY 
+
+cache_mem 64 MB
+maximum_object_size_in_memory 64 KB
+maximum_object_size 512 MB
+minimum_object_size 0 KB
+cache_swap_low 90
+cache_swap_high 95
+cache_dir ufs /var/spool/squid3 2048 16 256
+cache_access_log /var/log/squid3/access.log 
+
+refresh_pattern ^ftp: 15 20% 2280
+refresh_pattern ^gopher: 15 0% 2280
+refresh_pattern . 15 20% 2280 
+
+acl all src 0.0.0.0/0.0.0.0
+acl manager proto cache_object
+acl localhost src 127.0.0.1/255.255.255.255
+acl SSL_ports port 443 563
+acl Safe_ports port 21 80 443 563 70 210 280 488 59 777 901 1025-65535
+acl purge method PURGE
+acl CONNECT method CONNECT 
+
+http_access allow manager localhost
+http_access deny manager
+http_access allow purge localhost
+http_access deny purge
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports 
+
+acl rede_local src 192.168.100.0/24
+acl palavras_bloqueadas url_regex -i "/etc/squid3/palavras_bloqueadas.txt "
+acl sites_bloqueados url_regex -i "/etc/squid3/sites_bloqueados.txt "
+acl redes_sociais url_regex -i "/etc/squid3/redes_sociais.txt"
+acl liberados src "/etc/squid3/ips_liberados.txt "
+acl [*****] url_regex -i "/etc/squid3/sites_porno.txt "
+acl formato_arquivo url_regex -i "/etc/squid3/formato_arquivo.txt"
+acl horario_almoco time 12:00-13:00 
+
+http_access allow liberados
+http_access allow redes_sociais  horario_almoco
+http_access deny redes_sociais
+http_access deny sites_bloqueados
+http_access deny palavras_bloqueadas
+http_access deny [*****]
+http_access deny formato_arquivo
+http_access allow rede_local
+http_access allow localhost 
+
+http_access deny all
