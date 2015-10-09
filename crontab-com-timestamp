@@ -1,0 +1,9 @@
+/usr/local/bin/squid-analyzer 2>&1 | /home/timestamp.sh >> /var/log/squidanalyzer.log
+
+** script timestamp.sh
+#!/bin/bash
+while read x; do
+    echo -n `date +%d/%m/%Y\ %H:%M:%S`;
+    echo -n " ";
+    echo $x;
+done
