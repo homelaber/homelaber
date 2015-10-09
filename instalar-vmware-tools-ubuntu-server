@@ -1,0 +1,9 @@
+## Script para instalar o VMware Tools no Ubuntu
+
+mkdir -p /media/cdrom
+mount /dev/cdrom /media/cdrom
+cp -v /media/cdrom/VM*.tar.gz /tmp/
+tar xzvf /tmp/VM*.tar.gz
+mkdir -p /usr/lib64
+./vmware-tools-distrib/vmware-install.pl -d
+rm -r -f -v vmware-tools-distrib/
