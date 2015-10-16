@@ -1,0 +1,115 @@
+
+
+##########################################################################################################
+#SCRIPT PARA SHUTDOWN DE VIRTUAL MACHINES NO VCENTER
+#
+#USO:
+#CRIAR UM ARQUIVO TXT NO FORMATO ABAIXO COM O NOME DE VMLIST.TXT
+#
+#name
+#VM01
+#VM01
+#VM03
+#
+#VERSÃO 1
+#FALTA MELHORAR A PARTE DE LOG E CATCH DE ERRO....
+#########################################################################################################
+clear
+function LogMessage ([String[]] $messages)
+{
+ 
+   $timestamp = $([DateTime]::Now).ToString()
+ 
+   foreach ($message in $messages)
+   {
+      if ([string]::IsNullOrEmpty($message))
+      {
+         continue
+      }
+ 
+      Write-Host "$message"
+ 
+      $message = $message.Replace("`r`n", " ")
+      $message = $message.Replace("`n", " ")
+      Add-Content $logFile "$timestamp $message"
+   }
+}
+
+#POWER OFF
+Add-PSSnapin VMware.VimAutomation.Core  
+clear  
+$vcenter="VCENTERMPLU.multiplus.corp" 
+$mycredentials = Get-Credential 
+$scriptDir = Split-Path $MyInvocation.MyCommand.Path
+$logfile = $scriptDir + "\log.txt" 
+$vmlistfile = $scriptDir + "\vmlist.txt"
+$waittime = 30
+
+LogMessage "Iniciando Shudown das VMs:" 
+Import-Csv $vmlistfile |  
+foreach {  
+    $strNewVMName = $_.name
+    Write-Host $strNewVMName
+    }
+
+LogMessage "==========================================================================================="
+#Connect to vcenter server  
+LogMessage "Conectando no servidor Vcenter: $vcenter ..."
+
+$success = Connect-VIServer $vcenter -Credential $mycredentials -WarningAction:SilentlyContinue
+if ($success) { Write-Host "Conectado com sucesso ao servidor vCenter: $vcenter" -Foregroundcolor Green }
+else
+{
+    Write-Host "Não foi possível conectar ao servidor cCenter: $vcenter" -Foregroundcolor Red
+    LogMessage "Não foi possível conectar ao servidor cCenter: $vcenter"
+    exit
+}
+Write-Host ""
+  
+#Import vm name from csv file  
+LogMessage "Carregando arquivo de vms..."
+
+Import-Csv $vmlistfile |  
+foreach {  
+    $strNewVMName = $_.name  
+  
+    #Generate a view for each vm to determine power state  
+    $vm = Get-View -ViewType VirtualMachine -Filter @{"Name" = $strNewVMName}  
+  
+    #If vm is powered on then VMware Tools status is checked  
+           if ($vm.Runtime.PowerState -ne "PoweredOff") {  
+               if ($vm.config.Tools.ToolsVersion -ne 0) { 
+                
+                   LogMessage "Processando VM: ++ $strNewVMName ++ ..."
+                   
+                   #Commando de Shutdown...                 
+                   Shutdown-VMGuest $strNewVMName -Confirm:$false
+                   
+                   LogMessage "Executando shutdown da VM ++ $strNewVMName ++ via VNMware Tools.Aguardando... (30s)"
+                   
+                   sleep 30
+                   
+               }  
+               else {  
+                    
+                    LogMessage "Processando VM: ++ $strNewVMName ++ ..."
+                   
+                    #Commando de Shutdown...          
+                    Stop-VM $strNewVMName -Confirm:$false 
+
+                    LogMessage "Executando shutdown da VM: ++ $strNewVMName ++ via Force Stop.Aguardando... (30s)"
+                    
+                    sleep 30        
+                  
+               }  
+           }  
+}  
+  
+
+#Disconnect vcenter server  
+LogMessage "Desconectando servidor Vcenter..."
+disconnect-viserver $vcenter -Confirm:$false
+sleep 5
+LogMessage "Servidor Vcenter Desconectado!"
+
+
