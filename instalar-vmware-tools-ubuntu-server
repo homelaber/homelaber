@@ -1,4 +1,7 @@
 ## Script para instalar o VMware Tools no Ubuntu
+#chmod +x nome do arquivo.sh
+
+
 
 mkdir -p /media/cdrom
 mount /dev/cdrom /media/cdrom
