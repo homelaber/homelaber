@@ -1,16 +1,16 @@
-http_port 3128
-visible_hostname proxy.homelab.srv.br 
+http_port 3128 #porta em que o squid vai responder as requisições
+visible_hostname proxy.homelab.srv.br  #altere para o nome que você desejar
 
-#error_directory /usr/share/squid/errors/Portuguese 
+#error_directory /usr/share/squid/errors/Portuguese # não vamos utilizar isso agora na configuração básica
 
 hierarchy_stoplist CGI-bin ? 
 
-cache_mgr admin@seu_dominio.com.br 
+cache_mgr admin@seu_dominio.com.br #coloque o e-mail do administrador do squid
 
 acl QUERY urlpath_regex cgi-bin ?
 no_cache deny QUERY 
 
-cache_mem 64 MB
+cache_mem 512 MB
 maximum_object_size_in_memory 64 KB
 maximum_object_size 512 MB
 minimum_object_size 0 KB
@@ -24,7 +24,6 @@ refresh_pattern ^gopher: 15 0% 2280
 refresh_pattern . 15 20% 2280 
 
 acl all src 0.0.0.0/0.0.0.0
-acl manager proto cache_object
 acl localhost src 127.0.0.1/255.255.255.255
 acl SSL_ports port 443 563
 acl Safe_ports port 21 80 443 563 70 210 280 488 59 777 901 1025-65535
