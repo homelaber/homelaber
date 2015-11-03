@@ -1,5 +1,9 @@
-/usr/local/bin/squid-analyzer 2>&1 | /home/timestamp.sh >> /var/log/squidanalyzer.log
+#executa o squidanalyzer a cada 5 minutos.
+*/5 * * * * /usr/local/bin/squid-analyzer 2>&1 | /home/timestamp.sh >> /var/log/squidanalyzer-cron.log
 
+/usr/local/bin/squid-analyzer 2>&1 | /home/timestamp.sh >> /var/log/squidanalyzer-cron.log
+
+nano /home/timestamp.sh
 ** script timestamp.sh
 #!/bin/bash
 while read x; do
@@ -7,3 +11,5 @@ while read x; do
     echo -n " ";
     echo $x;
 done
+
+chmod +x /home/timestamp.sh
