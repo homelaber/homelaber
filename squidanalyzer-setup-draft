@@ -1,0 +1,78 @@
+Neste post vou mostrar como instalar e configurar o Squid Analyzer, um software responsável por ler e formatar os logs do Squid de uma forma totalmente gráfica e intuitiva. É uma excelente ferramenta para o administrador do Squid entender o que passa pelo seu proxy, quais são as URLs de maior acesso, usuários, etc.
+
+Os pré-requisitos para a instalação do Squid Analyzer são:
+
+- Servidor Apache (ou Nginx)
+- Perl
+- Squid Proxy
+
+Primeiramente você deve se logar no seu servidor Squid. Uma vez logado, vamos realizar a instalação do Apache.
+
+apt-get install apache2
+
+Para confirmar a instalação, abra um browser e acesse o IP do seu servidor. A tela abaixo deverá aparecer.
+
+faça a instalação do make
+
+apt-get install make
+
+Fazer o download do Squid Analyzer - http://squidanalyzer.darold.net/download.html
+
+Você pode baixar a última versão do arquivo 
+wget http://sourceforge.net/projects/squid-report/files/latest/download -O squidanalyzer.tar.gz
+
+O arquivo é bem pequeno tem apenas 152Kb. 
+
+Descompate o arquivo usando o comando
+tar zxvf squidanalyzer.tar.gzt
+
+cd squidanalyzer-6.3-1/
+
+Pearl Makefile.PL
+
+make
+
+make install
+
+configurar o apache
+
+mv  /var/www/squidanalyzer/ /var/www/html/squidanalyzer
+
+nano /etc/apache2/sites-availabe/squidanalyzer.conf
+
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html/squidanalyzer
+        ErrorLog ${APACHE_LOG_DIR}/squidanalyzer-error.log
+        CustomLog ${APACHE_LOG_DIR}/squidanalyzer-access.log combined
+</VirtualHost>
+
+editar o arquivo squidanalyzer.conf
+nano /etc/squidanalyzer/squidanalyzer.conf
+
+#alterar a linha Output de /var/www/squidanalyzer para /var/www/html/squidanalyzer
+#alterar a linha WebUrl para /squidanalyzer
+
+fazer o restart do apache
+
+service apache2 restart
+
+executar o squidanalyzer
+
+/usr/local/bin/squid-analyzer -d
+
+abra o browser e acesse a url http://<seuip>/squidadnalyzer
+
+Voialá... Sucesso. Agora os toques finais
+
+1. Adicionar o squidanalyzer na crontab (agendador de tarefas do Linux) para em nosso exemplo rodar a cada 5 minutos
+
+crontab -e
+
+cole as linhas abaixo no final do arquivo
+
+#executa o squidanalyzer a cada 5 minutos.
+*/5 * * * * /usr/local/bin/squid-analyzer 2>&1 | /home/timestamp.sh >> /var/log/squidanalyzer-cron.log
+
+
+
