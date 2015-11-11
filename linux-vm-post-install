@@ -1,0 +1,77 @@
+http_proxy="http://192.168.30.252:3128/"
+https_proxy="http://192.168.30.252:3128/"
+ftp_proxy="http://192.168.30.252:3128/"
+HTTP_PROXY="http://192.168.30.252:3128/"
+HTTPS_PROXY="http://192.168.30.252:3128/"
+FTP_PROXY="http://192.168.30.252:3128/"
+
+
+VM Linux
+
+1. Verificar IP fixo : -->  cat /etc/network/interfaces
+2. Add usuario opmanager
+	
+	--> userdel -r serviceop -f
+	--> useradd -m -G sudo -p 11r00t22@
+	--> passwd serviceop
+	
+	
+3. Configurar SNMP
+
+
+	mv /etc/snmp/snmpd.conf /etc/snmp/snmpd.conf.ori
+	
+	wget http://10.153.235.58/setup/snmpd.conf
+
+	
+	nano /etc/snmp/snmpd.conf
+	colar o conteudo abaixo e salvar
+		#agentAddress  udp:10.153.235.18:161
+		agentAddress udp:161
+		#  ACCESS CONTROL
+		view all    included  .1
+		rocommunity multiplus
+		#  SYSTEM INFORMATION
+		sysLocation    Multiplus
+		sysContact     suporte.escritorio@pontosmultiplus.com.br
+		sysServices    72
+	 service snmpd restart
+
+4. Instalar Vmware Tools
+
+	
+5. Adicionar Host ao OpManager
+	user: serviceop (snmp)
+
+	
+
+- VM:
+Pad
+
+
+
+
+
+- Mudar o dominio
+- Adicionar DNS 10.153.235.1 e 10.153.235.2
+
+
+Install VMware Tools
+
+mkdir /media/cdrom
+mount /dev/cdrom /media/cdrom
+cp /media/cdrom/VMware*.tar.gz /tmp
+cd /tmp
+tar xzvf VMware*.gz
+cd vmware-tools-distrib/
+./vmware-install.pl -d
+
+rm -r -f -v /tmp/VM*
+rm -r -f -v /tmp/vm*
+
+  
+if [ `id -u serviceop >/dev/null 2>&1; echo $?` -eq 0 ]; then echo existe; fi
+
+
+
+for f in `cat servers.txt`; do echo "### $f ###"; ssh $f -l serviceop -a; done
