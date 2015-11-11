@@ -1,0 +1,107 @@
+relayhost = pontosmultiplus-com-br.mail.protection.outlook.com
+smtp_sasl_security_options = noanonymous
+smtp_sasl_tls_security_options = noanonymous
+smtp_tls_security_level = encrypt
+smtp_use_tls = yes
+mynetworks = 127.0.0.0/8, 10.0.0.0/8
+smtp_generic_maps = hash:/etc/postfix/generic
+
+
+#soft_bounce = no
+queue_directory = /var/spool/postfix
+command_directory = /usr/sbin
+daemon_directory = /usr/lib/postfix
+data_directory = /var/lib/postfix
+mail_owner = postfix
+message_size_limit = 32000000
+#default_privs = nobody
+#myhostname = host.domain.tld
+#myhostname = virtual.domain.tld
+mydomain = pontosmultiplus.com.br
+#myorigin = $myhostname
+#myorigin = $mydomain
+inet_interfaces = all
+#inet_interfaces = $myhostname
+#inet_interfaces = $myhostname, localhost
+#inet_interfaces = localhost
+inet_protocols = all
+#proxy_interfaces =
+#proxy_interfaces = 1.2.3.4
+mydestination = $myhostname, localhost.$mydomain, localhost
+#mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+#mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain,
+#       mail.$mydomain, www.$mydomain, ftp.$mydomain
+#local_recipient_maps = unix:passwd.byname $alias_maps
+#local_recipient_maps = proxy:unix:passwd.byname $alias_maps
+#local_recipient_maps =
+unknown_local_recipient_reject_code = 550
+# TRUST AND RELAY CONTROL
+#mynetworks_style = class
+#mynetworks_style = subnet
+#mynetworks_style = host
+#mynetworks = 10.0.0.0/8, 127.0.0.0/8, -- valdecir 06.03.14 - liberado apenas para enviar emails a rede 235 e ips impressora
+#mynetworks = 10.153.226.0/23, 10.153.235.0/24, 127.0.0.0/8, 10.153.227.17, 10.153.227.16 ,10.153.227.14, 10.153.227.15, 10.153.227.6, 10.153.226.2,10.153.226.4,10.153.227.5, 10.153.227.29
+mynetworks = 10.153.224.0/20
+#mynetworks = 168.100.189.0/28, 127.0.0.0/8
+#mynetworks = $config_directory/mynetworks
+#mynetworks = hash:/etc/postfix/network_table
+#relay_domains = $mydestination
+#relayhost = $mydomain
+#relayhost = [gateway.my.domain]
+#relayhost = [mailserver.isp.tld]
+#relayhost = uucphost
+#relayhost = [an.ip.add.ress]
+relayhost = 192.168.1.143
+#relay_recipient_maps = hash:/etc/postfix/relay_recipients
+#in_flow_delay = 1s
+# username->Firstname.Lastname mapping.
+#alias_maps = dbm:/etc/aliases
+alias_maps = hash:/etc/aliases
+#alias_maps = hash:/etc/aliases, nis:mail.aliases
+#alias_maps = netinfo:/aliases
+#alias_database = dbm:/etc/aliases
+#alias_database = dbm:/etc/mail/aliases
+alias_database = hash:/etc/aliases
+#alias_database = hash:/etc/aliases, hash:/opt/majordomo/aliases
+#recipient_delimiter = +
+#home_mailbox = Mailbox
+#home_mailbox = Maildir/
+#mail_spool_directory = /var/mail
+#mail_spool_directory = /var/spool/mail
+#mailbox_command = /some/where/procmail
+#mailbox_command = /some/where/procmail -a "$EXTENSION"
+#mailbox_transport = lmtp:unix:/var/lib/imap/socket/lmtp
+# mailbox_transport = lmtp:unix:/var/lib/imap/socket/lmtp
+# local_destination_recipient_limit = 300
+# local_destination_concurrency_limit = 5
+#fallback_transport = lmtp:unix:/var/lib/imap/socket/lmtp
+#fallback_transport =
+#luser_relay = $user@other.host
+#luser_relay = $local@other.host
+#luser_relay = admin+$local
+#header_checks = regexp:/etc/postfix/header_checks
+#fast_flush_domains = $relay_domains
+#smtpd_banner = $myhostname ESMTP $mail_name
+#smtpd_banner = $myhostname ESMTP $mail_name ($mail_version)
+#local_destination_concurrency_limit = 2
+#default_destination_concurrency_limit = 20
+debug_peer_level = 2
+#debug_peer_list = 127.0.0.1
+#debug_peer_list = some.domain
+debugger_command =
+         PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin
+         ddd $daemon_directory/$process_name $process_id & sleep 5
+
+
+sendmail_path = /usr/sbin/sendmail.postfix
+newaliases_path = /usr/bin/newaliases.postfix
+mailq_path = /usr/bin/mailq.postfix
+
+setgid_group = postdrop
+
+html_directory = no
+
+manpage_directory = /usr/share/man
+sample_directory = /usr/share/doc/postfix-2.6.6/samples
+
+readme_directory = /usr/share/doc/postfix-2.6.6/README_FILES
