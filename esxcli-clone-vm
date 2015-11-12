@@ -1,0 +1,3 @@
+vmkfstools -d thin -i /vmfs/volumes/54023ae9-989b9114-f653-001b21267170/linux-ubuntu-template/linux-ubuntu-template.vmdk /vmfs/volumes/54023ae9-989b9114-f653-001b21267170/mailrelay/mailrelay.vmdk
+esxcli vm process list
+esxcli vm process kill --type=soft --world-id=1823666
