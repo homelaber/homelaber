@@ -1,0 +1,9 @@
+apt-get install snmp snmpd lm-sensors snmp-mibs-downloader
+mv /etc/snmp/snmpd.conf /etc/snmp/snmpd.conf.ori
+nano /etc/snmp/snmpd.conf
+  view all included .1
+  rocommunity homelab #nome da community
+  sysLocation homelab #local do equipamento
+  sysContact labadmin@homelab.srv.br #email de contato do equipamento
+service snmpd restart
+snmpwalk -v2c localhost -c homelab .1
