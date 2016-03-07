@@ -1,7 +1,9 @@
+nano /etc/network/interfaces
+
 auto eth0 
 iface eth0 inet static  
-address 192.168.100.6 
+address 192.168.100.9
 gateway 192.168.100.254
 network 192.168.100.0
 broadcast 192.168.1.255
-dns-nameservers 192.168.100.1 192.168.100.254 8.8.8.8
+dns-nameservers 192.168.100.1
