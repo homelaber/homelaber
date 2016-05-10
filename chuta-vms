@@ -1,5 +1,3 @@
-
-
 ##########################################################################################################
 #SCRIPT PARA SHUTDOWN DE VIRTUAL MACHINES NO VCENTER
 #
@@ -15,6 +13,7 @@
 #FALTA MELHORAR A PARTE DE LOG E CATCH DE ERRO....
 #########################################################################################################
 clear
+#função que cria um arquivo de log 
 function LogMessage ([String[]] $messages)
 {
  
@@ -38,7 +37,7 @@ function LogMessage ([String[]] $messages)
 #POWER OFF
 Add-PSSnapin VMware.VimAutomation.Core  
 clear  
-$vcenter="VCENTERMPLU.multiplus.corp" 
+$vcenter="COLOCAR O NOME DO SEU VCENTER SERVER AQUI" 
 $mycredentials = Get-Credential 
 $scriptDir = Split-Path $MyInvocation.MyCommand.Path
 $logfile = $scriptDir + "\log.txt" 
@@ -111,5 +110,3 @@ LogMessage "Desconectando servidor Vcenter..."
 disconnect-viserver $vcenter -Confirm:$false
 sleep 5
 LogMessage "Servidor Vcenter Desconectado!"
-
-
